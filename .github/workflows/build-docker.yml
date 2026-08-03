@@ -1,0 +1,23 @@
+name: Build Chatwoot Custom Image
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - custom/reason-suite
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify repository
+        run: |
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Repository: ${{ github.repository }}"
+          ls -la
