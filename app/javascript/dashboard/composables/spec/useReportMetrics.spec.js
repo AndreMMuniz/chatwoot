@@ -1,9 +1,11 @@
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useReportMetrics } from '../useReportMetrics';
 import { useMapGetter } from 'dashboard/composables/store';
 import { summary, botSummary } from './fixtures/reportFixtures';
 
 vi.mock('dashboard/composables/store');
+vi.mock('vue-i18n');
 vi.mock('@chatwoot/utils', () => ({
   formatTime: vi.fn(time => `formatted_${time}`),
 }));
@@ -11,6 +13,7 @@ vi.mock('@chatwoot/utils', () => ({
 describe('useReportMetrics', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(useI18n).mockReturnValue({ locale: ref('en-US') });
     useMapGetter.mockReturnValue(ref(summary));
   });
 
