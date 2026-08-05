@@ -28,6 +28,7 @@ import {
   resolveSidebarSort,
   sortSidebarItems,
 } from 'dashboard/helper/sidebarSort';
+import { isCallsMenuAvailable } from './callsAvailability';
 
 const props = defineProps({
   isMobileSidebarOpen: {
@@ -67,13 +68,16 @@ const isFeatureEnabledonAccount = useMapGetter(
 // Calls rely on the enterprise API. Keep the menu hidden unless the
 // installation supports it and the current account explicitly enables it.
 const isCallsAvailable = computed(() => {
-  const hasPlatformSupport = isOnChatwootCloud.value || isEnterprise;
   const isEnabledForAccount = isFeatureEnabledonAccount.value(
     accountId.value,
     FEATURE_FLAGS.CALLS_DASHBOARD
   );
 
-  return hasPlatformSupport && isEnabledForAccount;
+  return isCallsMenuAvailable({
+    isOnChatwootCloud: isOnChatwootCloud.value,
+    isEnterprise,
+    isEnabledForAccount,
+  });
 });
 
 const hasAdvancedAssignment = computed(() => {
