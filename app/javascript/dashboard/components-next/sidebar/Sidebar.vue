@@ -47,11 +47,6 @@ const { accountScopedRoute, isOnChatwootCloud } = useAccount();
 const { isEnterprise } = useConfig();
 const store = useStore();
 
-// Calls run on the enterprise-only API (cloud runs enterprise); hide the entry
-// on community so it doesn't lead to a dashboard/CTA the backend can't serve.
-const isCallsAvailable = computed(
-  () => isOnChatwootCloud.value || isEnterprise
-);
 const searchShortcut = useKbd([`$mod`, 'k']);
 const { t } = useI18n();
 
@@ -68,6 +63,18 @@ const currentUserId = useMapGetter('getCurrentUserID');
 const isFeatureEnabledonAccount = useMapGetter(
   'accounts/isFeatureEnabledonAccount'
 );
+
+// Calls rely on the enterprise API. Keep the menu hidden unless the
+// installation supports it and the current account explicitly enables it.
+const isCallsAvailable = computed(() => {
+  const hasPlatformSupport = isOnChatwootCloud.value || isEnterprise;
+  const isEnabledForAccount = isFeatureEnabledonAccount.value(
+    accountId.value,
+    FEATURE_FLAGS.CALLS_DASHBOARD
+  );
+
+  return hasPlatformSupport && isEnabledForAccount;
+});
 
 const hasAdvancedAssignment = computed(() => {
   return isFeatureEnabledonAccount.value(
